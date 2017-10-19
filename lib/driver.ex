@@ -7,7 +7,7 @@ defmodule Driver do
     def main do
         case read_symbols("./lib/symbols.bin") do
             {:ok,symbols} -> Enum.map(symbols,&(generate_daily_url(&1)))
-                |>Getter.get_all_json()
+                |>Getter.get_all_json
                 |>Enum.map(fn(x) ->
                     find_vwap_violation(x,0.38)
                     end)

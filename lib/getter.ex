@@ -13,7 +13,7 @@ defmodule Getter do
             end
         rescue
             _ in HTTPotion.HTTPError -> get_body(url)
-            _ in ArgumentError -> {:error,"Argument Error"}
+            e in ArgumentError -> {:error,"Argument Error: " <> e}
         end
     end
 
@@ -33,7 +33,7 @@ defmodule Getter do
                     {:error,nil}
                 end
         rescue
-            _ in ArgumentError -> IO.puts symbol<>":"<>"Argument Error"
+            e in ArgumentError -> IO.puts symbol<>":"<>"Argument Error in get json obj --" <> e
                 {:error,nil}
             
         end
@@ -44,7 +44,7 @@ defmodule Getter do
     """
     def get_all_json(urls) do
         try do
-            Enum.map(urls,fn(x) -> Task.async(get_json_obj(x)) end)
+            Enum.map(urls,fn(x) -> Task.async(fn -> get_json_obj(x) end) end)
             |>Enum.map(fn(task) -> Task.await(task,200000) end)
         rescue
             _ -> {:error,"ERROR IN GET ALL"}   
